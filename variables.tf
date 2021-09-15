@@ -58,14 +58,14 @@ variable "enable_sftp" {
 variable "user_name" {
   type        = string
   description = "User name for SFTP server."
-  sensitive   = true
+#   sensitive   = true
 }
 
 variable "public_key" {
   type        = string
   default     = ""
   description = "Name  (e.g. `ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQ`)."
-  sensitive   = true
+#   sensitive   = true
 }
 
 variable "identity_provider_type" {
@@ -77,20 +77,20 @@ variable "identity_provider_type" {
 variable "s3_bucket_id" {
   type        = string
   description = "The landing directory (folder) for a user when they log in to the server using their SFTP client."
-  sensitive   = true
+#   sensitive   = true
 }
 
 variable "key_path" {
   type        = string
   default     = ""
   description = "Name  (e.g. `~/.ssh/id_rsa.pub`)."
-  sensitive   = true
+#   sensitive   = true
 }
 variable "sub_folder" {
   type        = string
   default     = ""
   description = "Landind folder."
-  sensitive   = true
+#   sensitive   = true
 }
 
 variable "endpoint_type" {
