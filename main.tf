@@ -84,6 +84,7 @@ resource "aws_transfer_server" "transfer_server_vpc" {
   endpoint_type          = var.endpoint_type
   endpoint_details {
     vpc_id = var.vpc_id
+    subnet_ids = module.vpc.public_subnets
   }
 }
 
@@ -104,7 +105,7 @@ resource "aws_transfer_user" "transfer_server_user" {
 resource "aws_transfer_ssh_key" "transfer_server_ssh_key" {
   count = var.enable_sftp ? 1 : 0
 
-  server_id = join("", aws_transfer_server.transfer_server_vpc.*.id)
+  server_id = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
   user_name = join("", aws_transfer_user.transfer_server_user.*.user_name)
   body      = var.public_key == "" ? file(var.key_path) : var.public_key
 }
