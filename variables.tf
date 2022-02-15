@@ -104,3 +104,9 @@ variable "vpc_id" {
   default     = ""
   description = "VPC ID"
 }
+
+variable "public_subnet_ids" {
+  type        = list(any)
+  default     = []
+  description = "list of VPC public subnet IDs"
+}
