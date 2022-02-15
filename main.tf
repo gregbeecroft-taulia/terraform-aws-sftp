@@ -104,7 +104,7 @@ resource "aws_transfer_user" "transfer_server_user" {
 resource "aws_transfer_ssh_key" "transfer_server_ssh_key" {
   count = var.enable_sftp ? 1 : 0
 
-  server_id = join("", aws_transfer_server.transfer_server.*.id)
+  server_id = join("", aws_transfer_server.transfer_server_vpc.*.id)
   user_name = join("", aws_transfer_user.transfer_server_user.*.user_name)
   body      = var.public_key == "" ? file(var.key_path) : var.public_key
 }
