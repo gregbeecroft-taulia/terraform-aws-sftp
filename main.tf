@@ -65,6 +65,7 @@ resource "aws_iam_role_policy" "transfer_server_policy" {
 # Module      : AWS TRANSFER SERVER
 # Description : Provides a AWS EIP resource.
 resource "aws_eip" "transfer" {
+  count = length(var.public_subnet_ids)
   vpc   = true
   tags = {
     Name = "transfer-server"
