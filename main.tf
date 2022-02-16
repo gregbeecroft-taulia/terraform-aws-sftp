@@ -78,6 +78,7 @@ resource "aws_transfer_server" "transfer_server" {
   count = var.enable_sftp && var.endpoint_type == "PUBLIC" ? 1 : 0
 
   identity_provider_type = var.identity_provider_type
+  security_policy_name   = "TransferSecurityPolicy-2020-06"
   logging_role           = join("", aws_iam_role.transfer_server_role.*.arn)
   force_destroy          = false
   tags                   = module.labels.tags
@@ -92,6 +93,7 @@ resource "aws_transfer_server" "transfer_server_vpc" {
   count = var.enable_sftp && var.endpoint_type == "VPC" ? 1 : 0
 
   identity_provider_type = var.identity_provider_type
+  security_policy_name   = "TransferSecurityPolicy-2020-06"
   logging_role           = join("", aws_iam_role.transfer_server_role.*.arn)
   force_destroy          = false
   tags                   = module.labels.tags
@@ -100,6 +102,7 @@ resource "aws_transfer_server" "transfer_server_vpc" {
     vpc_id = var.vpc_id
     subnet_ids = var.public_subnet_ids    
     address_allocation_ids = aws_eip.transfer[*].id
+    security_group_ids = var.sftp_security_group_ids
   }
 }
 

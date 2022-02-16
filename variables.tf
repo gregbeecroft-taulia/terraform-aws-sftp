@@ -110,3 +110,9 @@ variable "public_subnet_ids" {
   default     = []
   description = "list of VPC public subnet IDs"
 }
+
+variable "sftp_security_group_ids" {
+  type        = list(any)
+  default     = []
+  description = "list of security group IDs to assign to the transfer server endpoint"
+}
