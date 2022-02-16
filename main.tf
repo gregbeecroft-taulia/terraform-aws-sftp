@@ -98,6 +98,7 @@ resource "aws_transfer_server" "transfer_server_vpc" {
   endpoint_details {
     vpc_id = var.vpc_id
     subnet_ids = var.public_subnet_ids    
+    address_allocation_ids = [aws_eip.transfer.id]
   }
 }
 
