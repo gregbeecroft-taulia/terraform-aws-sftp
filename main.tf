@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "transfer_server_assume_policy" {
 
 resource "aws_s3_bucket" "environment" {
   for_each = var.users
-  bucket = "${var.s3_bucket_prefix}${each.key}
+  bucket = "${var.s3_bucket_prefix}${each.key}""
 }
 
 # Module      : IAM ROLE
