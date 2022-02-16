@@ -63,6 +63,15 @@ resource "aws_iam_role_policy" "transfer_server_policy" {
 }
 
 # Module      : AWS TRANSFER SERVER
+# Description : Provides a AWS EIP resource.
+resource "aws_eip" "transfer" {
+  vpc   = true
+  tags = {
+    Name = "transfer-server"
+  }
+}
+
+# Module      : AWS TRANSFER SERVER
 # Description : Provides a AWS Transfer Server resource.
 resource "aws_transfer_server" "transfer_server" {
   count = var.enable_sftp && var.endpoint_type == "PUBLIC" ? 1 : 0
@@ -79,7 +88,7 @@ resource "aws_transfer_server" "transfer_server" {
 }
 #with VPC endpoint
 resource "aws_transfer_server" "transfer_server_vpc" {
-  count = var.enable_sftp && var.endpoint_type == "VPC_ENDPOINT" ? 1 : 0
+  count = var.enable_sftp && var.endpoint_type == "VPC" ? 1 : 0
 
   identity_provider_type = var.identity_provider_type
   logging_role           = join("", aws_iam_role.transfer_server_role.*.arn)
@@ -87,7 +96,8 @@ resource "aws_transfer_server" "transfer_server_vpc" {
   tags                   = module.labels.tags
   endpoint_type          = var.endpoint_type
   endpoint_details {
-    #vpc_id = var.vpc_id
+    vpc_id = var.vpc_id
+    subnet_ids = var.public_subnet_ids    
   }
 }
 
@@ -96,7 +106,7 @@ resource "aws_transfer_server" "transfer_server_vpc" {
 resource "aws_transfer_user" "transfer_server_user" {
   count = var.enable_sftp ? 1 : 0
 
-  server_id      = var.endpoint_type == "VPC_ENDPOINT" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
+  server_id      = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
   user_name      = var.user_name
   role           = join("", aws_iam_role.transfer_server_role.*.arn)
   home_directory = format("/%s/%s", var.s3_bucket_id, var.sub_folder)
@@ -108,7 +118,7 @@ resource "aws_transfer_user" "transfer_server_user" {
 resource "aws_transfer_ssh_key" "transfer_server_ssh_key" {
   count = var.enable_sftp ? 1 : 0
 
-  server_id = var.endpoint_type == "VPC_ENDPOINT" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
+  server_id = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
   user_name = join("", aws_transfer_user.transfer_server_user.*.user_name)
   body      = var.public_key == "" ? file(var.key_path) : var.public_key
 }
