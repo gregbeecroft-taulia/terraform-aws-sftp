@@ -17,6 +17,10 @@ module "labels" {
   label_order = var.label_order
 }
 
+locals {
+  fulluserlist = var.fulluserlist
+}
+
 
 data "aws_iam_policy_document" "transfer_server_assume_role" {
   statement {
