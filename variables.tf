@@ -122,3 +122,7 @@ variable "sftp_security_group_ids" {
   default     = []
   description = "list of security group IDs to assign to the transfer server endpoint"
 }
+
+variable "fulluserlist" {
+  type        = list(any)
+}

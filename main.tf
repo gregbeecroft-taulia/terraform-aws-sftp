@@ -1,10 +1,6 @@
 ## Managed By : Taulia
 ## Description : This Script is used to create Transfer Server, Transfer User And  TransferSSK_KEY.
 
-locals {
-  
-}
-
 #Module      : labels
 #Description : This terraform module is designed to generate consistent label names and tags
 #              for resources. You can use terraform-labels to implement a strict naming
@@ -117,10 +113,11 @@ resource "aws_transfer_server" "transfer_server_vpc" {
 # Module      : AWS TRANSFER USER
 # Description : Provides a AWS Transfer User resource.
 resource "aws_transfer_user" "transfer_server_user" {
-  count = var.enable_sftp ? 1 : 0
+  #count = var.enable_sftp ? 1 : 0
+  for_each = var.fulluserlist
 
   server_id      = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
-  user_name      = var.user_name
+  user_name      = each.username
   role           = join("", aws_iam_role.transfer_server_role.*.arn)
   home_directory = format("/%s/%s", var.s3_bucket_id, var.sub_folder)
   tags           = module.labels.tags
@@ -129,9 +126,12 @@ resource "aws_transfer_user" "transfer_server_user" {
 # Module      : AWS TRANSFER SSH KEY
 # Description : Provides a AWS Transfer User SSH Key resource.
 resource "aws_transfer_ssh_key" "transfer_server_ssh_key" {
-  count = var.enable_sftp ? 1 : 0
+  #count = var.enable_sftp ? 1 : 0
+  for_each = var.fulluserlist
 
   server_id = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
-  user_name = join("", aws_transfer_user.transfer_server_user.*.user_name)
-  body      = var.public_key == "" ? file(var.key_path) : var.public_key
+  #user_name = join("", aws_transfer_user.transfer_server_user.*.user_name)
+  user_name  = each.username
+  #body      = var.public_key == "" ? file(var.key_path) : var.public_key
+  body       = each.sshkey
 }
