@@ -1,6 +1,9 @@
-## Managed By : CloudDrove
+## Managed By : Taulia
 ## Description : This Script is used to create Transfer Server, Transfer User And  TransferSSK_KEY.
-## Copyright @ CloudDrove. All Right Reserved.
+
+locals {
+  
+}
 
 #Module      : labels
 #Description : This terraform module is designed to generate consistent label names and tags
@@ -41,6 +44,11 @@ data "aws_iam_policy_document" "transfer_server_assume_policy" {
 
     resources = ["*"]
   }
+}
+
+resource "aws_s3_bucket" "environment" {
+  for_each = var.users
+  bucket = "${var.s3_bucket_prefix}${each.key}
 }
 
 # Module      : IAM ROLE

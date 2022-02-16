@@ -80,6 +80,12 @@ variable "s3_bucket_id" {
 #   sensitive   = true
 }
 
+variable "s3_bucket_prefix" {
+  type        = string
+  description = "Prefix to use to create S3 buckets for each environment"
+#   sensitive   = true
+}
+
 variable "key_path" {
   type        = string
   default     = ""
