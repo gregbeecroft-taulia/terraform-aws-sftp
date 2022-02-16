@@ -114,10 +114,12 @@ resource "aws_transfer_server" "transfer_server_vpc" {
 # Description : Provides a AWS Transfer User resource.
 resource "aws_transfer_user" "transfer_server_user" {
   #count = var.enable_sftp ? 1 : 0
-  for_each = var.fulluserlist
+  for_each = {
+    for user in local.fulluserlist : "${user.username}" => user
+  }
 
   server_id      = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
-  user_name      = each.username
+  user_name      = each.value.username
   role           = join("", aws_iam_role.transfer_server_role.*.arn)
   home_directory = format("/%s/%s", var.s3_bucket_id, var.sub_folder)
   tags           = module.labels.tags
@@ -127,11 +129,13 @@ resource "aws_transfer_user" "transfer_server_user" {
 # Description : Provides a AWS Transfer User SSH Key resource.
 resource "aws_transfer_ssh_key" "transfer_server_ssh_key" {
   #count = var.enable_sftp ? 1 : 0
-  for_each = var.fulluserlist
+  for_each = {
+    for user in local.fulluserlist : "${user.username}" => user
+  }
 
   server_id = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
   #user_name = join("", aws_transfer_user.transfer_server_user.*.user_name)
-  user_name  = each.username
+  user_name  = each.value.username
   #body      = var.public_key == "" ? file(var.key_path) : var.public_key
-  body       = each.sshkey
+  body       = each.value.sshkey
 }
