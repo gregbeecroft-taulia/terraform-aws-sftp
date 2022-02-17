@@ -143,7 +143,7 @@ resource "aws_transfer_user" "transfer_server_user_mulesoft" {
   user_name      = each.value.username
   role           = join("", aws_iam_role.transfer_server_role.*.arn)
   home_directory_type = each.value.username == "taulia" ? "PATH" : "LOGICAL"
-  home_directory = "$${Transfer:HomeBucket}"
+  home_directory = "/${aws_s3_bucket.environment[each.value.env].id}"
   tags           = module.labels.tags
 }
 
