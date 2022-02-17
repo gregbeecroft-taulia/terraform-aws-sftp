@@ -46,7 +46,7 @@ data "aws_iam_policy_document" "transfer_server_assume_policy" {
   }
 }
 
-resource "aws_s3_bucket" "non_eu" {
+resource "aws_s3_bucket" "na" {
   for_each = {for k, v in var.users: k => v if k != "eu1prd"} 
   bucket = "${var.s3_bucket_prefix}${each.key}"
   provider = aws.us-east
@@ -134,7 +134,7 @@ resource "aws_transfer_user" "transfer_server_user" {
   role           = join("", aws_iam_role.transfer_server_role.*.arn)
   home_directory_mappings {
     entry = "/"
-    target = "/${aws_s3_bucket.environment[each.value.env].id}/$${Transfer:UserName}"
+    target = each.value.env == "eu1prd" ? "/${aws_s3_bucket.eu[each.value.env].id}/$${Transfer:UserName}" : "/${aws_s3_bucket.na[each.value.env].id}/$${Transfer:UserName}"
   }
   home_directory_type = each.value.username == "taulia" ? "PATH" : "LOGICAL"
   tags           = module.labels.tags
@@ -151,7 +151,7 @@ resource "aws_transfer_user" "transfer_server_user_mulesoft" {
   user_name      = each.value.username
   role           = join("", aws_iam_role.transfer_server_role.*.arn)
   home_directory_type = each.value.username == "taulia" ? "PATH" : "LOGICAL"
-  home_directory = "/${aws_s3_bucket.environment[each.value.env].id}"
+  home_directory = each.value.env == "eu1prd" ? "/${aws_s3_bucket.eu[each.value.env].id}" : "/${aws_s3_bucket.na[each.value.env].id}"
   tags           = module.labels.tags
 }
 
