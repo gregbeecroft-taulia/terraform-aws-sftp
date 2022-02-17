@@ -147,5 +147,5 @@ resource "aws_transfer_ssh_key" "transfer_server_ssh_key" {
   user_name  = each.value.username
   #body      = var.public_key == "" ? file(var.key_path) : var.public_key
   body       = each.value.sshkey
-  depends_on = [ aws_transfer_user.transfer_server_user[each.value.username] ]
+  depends_on = [ aws_transfer_user.transfer_server_user ]
 }
