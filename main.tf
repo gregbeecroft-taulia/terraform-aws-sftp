@@ -127,7 +127,7 @@ resource "aws_transfer_user" "transfer_server_user" {
   hdmappings = each.value.username == "taulia" ? {} : {entry = "/", target = "/${aws_s3_bucket.environment[each.value.env].id}/$${Transfer:UserName}"}
   home_directory_mappings = hdmappings
   hdtype = each.value.username == "taulia" ? "PATH" : "LOGICAL"
-  home_directory_type = $hdtype
+  home_directory_type = hdtype
   tags           = module.labels.tags
 }
 
