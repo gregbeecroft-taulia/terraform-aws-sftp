@@ -115,3 +115,6 @@ variable "fulluserlist" {
 }
 
 variable "users" {}
+
+variable "aws_arn" {}
+variable "region" {}
