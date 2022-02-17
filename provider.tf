@@ -1,5 +1,5 @@
 /* Setup our aws provider */
-provider "aws-eu" {
+provider "aws" {
   region = "eu-central-1"
   alias = "eu-central"
 
