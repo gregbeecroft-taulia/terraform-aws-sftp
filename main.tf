@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "transfer_server_assume_policy" {
 }
 
 resource "aws_s3_bucket" "non_eu" {
-  for_each = {for k, v in var.users: k => v if k != "eu1prd} 
+  for_each = {for k, v in var.users: k => v if k != "eu1prd"} 
   bucket = "${var.s3_bucket_prefix}${each.key}"
   provider = aws.us-east
 }
@@ -56,7 +56,7 @@ resource "aws_s3_bucket" "non_eu" {
 resource "aws_s3_bucket" "eu" {
   for_each = {for k, v in var.users: k => v if k == "eu1prd"} 
   bucket = "${var.s3_bucket_prefix}${each.key}"
-  provider = aws.us-east
+  provider = aws.eu-central
 }
 
 # Module      : IAM ROLE
