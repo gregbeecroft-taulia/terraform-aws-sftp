@@ -124,8 +124,7 @@ resource "aws_transfer_user" "transfer_server_user" {
   server_id      = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
   user_name      = each.value.username
   role           = join("", aws_iam_role.transfer_server_role.*.arn)
-  hdmappings = each.value.username == "taulia" ? {} : {entry = "/", target = "/${aws_s3_bucket.environment[each.value.env].id}/$${Transfer:UserName}"}
-  home_directory_mappings = hdmappings
+  home_directory_mappings = each.value.username == "taulia" ? {} : {entry = "/", target = "/${aws_s3_bucket.environment[each.value.env].id}/$${Transfer:UserName}"}
   home_directory_type = each.value.username == "taulia" ? "PATH" : "LOGICAL"
   tags           = module.labels.tags
 }
