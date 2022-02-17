@@ -49,6 +49,7 @@ data "aws_iam_policy_document" "transfer_server_assume_policy" {
 resource "aws_s3_bucket" "environment" {
   for_each = var.users
   bucket = "${var.s3_bucket_prefix}${each.key}"
+  region = each.key == "eu1prd" ? "eu-central-1" : "us-east-1"
 }
 
 # Module      : IAM ROLE
