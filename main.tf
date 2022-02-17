@@ -126,7 +126,7 @@ resource "aws_transfer_server" "transfer_server_vpc" {
 resource "aws_transfer_user" "transfer_server_user" {
   for_each = {
     #for user in local.fulluserlist : user.username => user if user.username != "taulia"
-    for user in local.fulluserlist : user.username => user if length(regexall("mulesoft", user.username)) > 0
+    for user in local.fulluserlist : user.username => user if length(regexall("mulesoft", user.username)) == 0
   }
 
   server_id      = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
