@@ -126,7 +126,7 @@ resource "aws_transfer_server" "transfer_server_vpc" {
 resource "aws_transfer_user" "transfer_server_user" {
   for_each = {
     #for user in local.fulluserlist : user.username => user if user.username != "taulia"
-    for user in local.fulluserlist : user.username => user if regex("mulesoft", user.username)
+    for user in local.fulluserlist : user.username => user if regex("mulesoft", user.username) != "mulesoft"
   }
 
   server_id      = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
@@ -137,7 +137,7 @@ resource "aws_transfer_user" "transfer_server_user" {
     target = each.value.env == "eu1prd" ? "/${aws_s3_bucket.eu[each.value.env].id}/$${Transfer:UserName}" : "/${aws_s3_bucket.na[each.value.env].id}/$${Transfer:UserName}"
   }
   #home_directory_type = each.value.username == "taulia" ? "PATH" : "LOGICAL"
-  home_directory_type = regex("mulesoft", each.value.username) ? "PATH" : "LOGICAL"
+  home_directory_type = regex("mulesoft", each.value.username) == "mulesoft" ? "PATH" : "LOGICAL"
   tags           = module.labels.tags
 }
 
@@ -146,7 +146,7 @@ resource "aws_transfer_user" "transfer_server_user" {
 resource "aws_transfer_user" "transfer_server_user_mulesoft" {
   for_each = {
   #  for user in local.fulluserlist : user.username => user if user.username == "taulia"
-    for user in local.fulluserlist : user.username => user if regex("mulesoft", user.username)
+    for user in local.fulluserlist : user.username => user if regex("mulesoft", user.username) == "mulesoft"
   }
 
   server_id      = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
