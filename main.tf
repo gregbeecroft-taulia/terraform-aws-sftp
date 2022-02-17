@@ -125,7 +125,11 @@ resource "aws_transfer_user" "transfer_server_user" {
   server_id      = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
   user_name      = each.value.username
   role           = join("", aws_iam_role.transfer_server_role.*.arn)
-  home_directory = format("/%s/%s", var.s3_bucket_id, var.sub_folder)
+  #home_directory = format("/%s%s/%s", var.s3_bucket_prefix, each.value.env, var.each.value.username)
+  home_directory_mappings {
+    entry  = "/"
+    target = "/${aws_s3_bucket.environment[each.value.env].id}/$${Transfer:UserName}"
+  }
   tags           = module.labels.tags
 }
 
