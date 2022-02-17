@@ -116,5 +116,9 @@ variable "fulluserlist" {
 
 variable "users" {}
 
-variable "aws_arn" {}
-variable "region" {}
+variable "aws_arn" {
+  default = "arn:aws:iam::557807441828:role/CrossAccountRoles-TrustedAdminRole0-1DCJFLC59QCHC"
+}
+variable "region" {
+  default = "us-east-1"
+}
