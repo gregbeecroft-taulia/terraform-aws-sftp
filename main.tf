@@ -117,35 +117,31 @@ resource "aws_transfer_server" "transfer_server_vpc" {
 # Module      : AWS TRANSFER USER
 # Description : Provides a AWS Transfer User resource.
 resource "aws_transfer_user" "transfer_server_user" {
-  #count = var.enable_sftp ? 1 : 0
   for_each = {
-    for user in local.fulluserlist : "${user.username}" => user
+    for user in local.fulluserlist : user.username => user if user.username != "taulia"
   }
 
   server_id      = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
   user_name      = each.value.username
   role           = join("", aws_iam_role.transfer_server_role.*.arn)
-  #home_directory = format("/%s%s/%s", var.s3_bucket_prefix, each.value.env, var.each.value.username)
+  hdmappings = each.value.username == "taulia" ? {} : {entry = "/", target = "/${aws_s3_bucket.environment[each.value.env].id}/$${Transfer:UserName}"}
   home_directory_mappings {
-    entry  = "/"
-    target = "/${aws_s3_bucket.environment[each.value.env].id}/$${Transfer:UserName}"
+    hdmappings
   }
-  home_directory_type = "LOGICAL"
+  hdtype = each.value.username == "taulia" ? "PATH" : "LOGICAL"
+  home_directory_type = hdtype
   tags           = module.labels.tags
 }
 
 # Module      : AWS TRANSFER SSH KEY
 # Description : Provides a AWS Transfer User SSH Key resource.
 resource "aws_transfer_ssh_key" "transfer_server_ssh_key" {
-  #count = var.enable_sftp ? 1 : 0
   for_each = {
     for user in local.fulluserlist : "${user.username}" => user
   }
 
   server_id = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
-  #user_name = join("", aws_transfer_user.transfer_server_user.*.user_name)
   user_name  = each.value.username
-  #body      = var.public_key == "" ? file(var.key_path) : var.public_key
   body       = each.value.sshkey
   depends_on = [ aws_transfer_user.transfer_server_user ]
 }
