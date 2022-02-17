@@ -54,7 +54,7 @@ resource "aws_s3_bucket" "non_eu" {
 
 ## EU bucket needs to live in EU datacenter/region
 resource "aws_s3_bucket" "eu" {
-  for_each = {for k, v in var.users: k => v if k == "eu1prd} 
+  for_each = {for k, v in var.users: k => v if k == "eu1prd"} 
   bucket = "${var.s3_bucket_prefix}${each.key}"
   provider = aws.us-east
 }
