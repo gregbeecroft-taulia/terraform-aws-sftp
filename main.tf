@@ -49,7 +49,6 @@ data "aws_iam_policy_document" "transfer_server_assume_policy" {
 resource "aws_s3_bucket" "na" {
   for_each = {for k, v in var.users: k => v if k != "eu1prd"} 
   bucket = "${var.s3_bucket_prefix}${each.key}"
-  provider = aws.us-east
 }
 
 ## EU bucket needs to live in EU datacenter/region
