@@ -113,3 +113,5 @@ variable "sftp_security_group_ids" {
 variable "fulluserlist" {
   type        = list(any)
 }
+
+variables "users" {}
