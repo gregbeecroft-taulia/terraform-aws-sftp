@@ -129,6 +129,21 @@ resource "aws_transfer_user" "transfer_server_user" {
   tags           = module.labels.tags
 }
 
+# Module      : AWS TRANSFER USER
+# Description : Provides a AWS Mulesoft root Transfer User resource.
+resource "aws_transfer_user" "transfer_server_user_mulesoft" {
+  for_each = {
+    for user in local.fulluserlist : user.username => user if user.username == "taulia"
+  }
+
+  server_id      = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
+  user_name      = each.value.username
+  role           = join("", aws_iam_role.transfer_server_role.*.arn)
+  home_directory_type = each.value.username == "taulia" ? "PATH" : "LOGICAL"
+  home_directory = "$${Transfer:HomeBucket}"
+  tags           = module.labels.tags
+}
+
 # Module      : AWS TRANSFER SSH KEY
 # Description : Provides a AWS Transfer User SSH Key resource.
 resource "aws_transfer_ssh_key" "transfer_server_ssh_key" {
@@ -139,5 +154,5 @@ resource "aws_transfer_ssh_key" "transfer_server_ssh_key" {
   server_id = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
   user_name  = each.value.username
   body       = each.value.sshkey
-  depends_on = [ aws_transfer_user.transfer_server_user ]
+  depends_on = [ aws_transfer_user.transfer_server_user, aws_transfer_user.transfer_server_user_mulesoft ]
 }
