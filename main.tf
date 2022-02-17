@@ -130,6 +130,7 @@ resource "aws_transfer_user" "transfer_server_user" {
     entry  = "/"
     target = "/${aws_s3_bucket.environment[each.value.env].id}/$${Transfer:UserName}"
   }
+  home_directory_type = LOGICAL
   tags           = module.labels.tags
 }
 
