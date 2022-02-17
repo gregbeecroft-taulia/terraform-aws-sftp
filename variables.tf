@@ -114,4 +114,4 @@ variable "fulluserlist" {
   type        = list(any)
 }
 
-variables "users" {}
+variable "users" {}
