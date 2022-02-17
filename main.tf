@@ -126,8 +126,7 @@ resource "aws_transfer_user" "transfer_server_user" {
   role           = join("", aws_iam_role.transfer_server_role.*.arn)
   hdmappings = each.value.username == "taulia" ? {} : {entry = "/", target = "/${aws_s3_bucket.environment[each.value.env].id}/$${Transfer:UserName}"}
   home_directory_mappings = hdmappings
-  hdtype = each.value.username == "taulia" ? "PATH" : "LOGICAL"
-  home_directory_type = hdtype
+  home_directory_type = each.value.username == "taulia" ? "PATH" : "LOGICAL"
   tags           = module.labels.tags
 }
 
