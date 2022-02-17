@@ -149,8 +149,11 @@ resource "aws_transfer_user" "transfer_server_user_mulesoft" {
   server_id      = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
   user_name      = each.value.username
   role           = join("", aws_iam_role.transfer_server_role.*.arn)
-  home_directory_type = each.value.username == "taulia" ? "PATH" : "LOGICAL"
-  home_directory = each.value.env == "eu1prd" ? "/${aws_s3_bucket.eu[each.value.env].id}" : "/${aws_s3_bucket.na[each.value.env].id}"
+  home_directory_type = "LOGICAL"
+  home_directory_mappings {
+    entry = "/"
+    target = each.value.env == "eu1prd" ? "/${aws_s3_bucket.eu[each.value.env].id}" : "/${aws_s3_bucket.na[each.value.env].id}"
+  }
   tags           = module.labels.tags
 }
 
