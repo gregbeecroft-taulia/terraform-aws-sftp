@@ -6,7 +6,7 @@ output "id" {
 }
 
 output "transfer_server_endpoint" {
-  value       = join("", aws_transfer_server.transfer_server.*.endpoint)
+  value       = join("", aws_transfer_server.transfer_server_vpc.*.endpoint)
   description = "The endpoint of the Transfer Server (e.g. s-12345678.server.transfer.REGION.amazonaws.com)."
 }
 
