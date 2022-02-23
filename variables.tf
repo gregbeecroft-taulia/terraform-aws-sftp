@@ -118,6 +118,14 @@ variable "pubkeylist" {
   type        = list(any)
 }
 
+variable "list_of_users" {
+  type        = list(string)
+}
+
+variable "list_of_pubkeys" {
+  type        = list(string)
+}
+
 variable "users" {}
 
 variable "aws_arn" {
