@@ -163,10 +163,10 @@ resource "aws_transfer_user" "transfer_server_user_mulesoft" {
 # Module      : AWS TRANSFER SSH KEY
 # Description : Provides a AWS Transfer User SSH Key resource.
 resource "aws_transfer_ssh_key" "transfer_server_ssh_key" {
-  count = var.list_of_pubkeys
+  count = local.list_of_pubkeys
 
   server_id = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
-  user_name  = var.list_of_usernames[count.index]
-  body       = var.list_of_pubkeys[count.index]
+  user_name  = local.list_of_usernames[count.index]
+  body       = local.list_of_pubkeys[count.index]
   depends_on = [ aws_transfer_user.transfer_server_user, aws_transfer_user.transfer_server_user_mulesoft ]
 }
