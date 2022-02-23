@@ -114,6 +114,10 @@ variable "fulluserlist" {
   type        = list(any)
 }
 
+variable "pubkeylist" {
+  type        = list(any)
+}
+
 variable "users" {}
 
 variable "aws_arn" {

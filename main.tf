@@ -19,6 +19,7 @@ module "labels" {
 
 locals {
   fulluserlist = var.fulluserlist
+  pubkeylist = var.pubkeylist
 }
 
 
@@ -161,7 +162,7 @@ resource "aws_transfer_user" "transfer_server_user_mulesoft" {
 # Description : Provides a AWS Transfer User SSH Key resource.
 resource "aws_transfer_ssh_key" "transfer_server_ssh_key" {
   for_each = {
-    for user in local.fulluserlist : user.username => user
+    for user in local.pubkeylist : user.username => user.pubkey
   }
 
   server_id = var.endpoint_type == "VPC" ? join("", aws_transfer_server.transfer_server_vpc.*.id) : join("", aws_transfer_server.transfer_server.*.id)
